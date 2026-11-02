@@ -6,21 +6,24 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import {
   ArrowUpRight,
-  BadgeCheck,
   Camera,
   ChevronRight,
   Clapperboard,
+  Clock,
+  FileCheck,
   AtSign,
-  LineChart,
   MapPin,
   Megaphone,
   Moon,
   MessageCircle,
   MousePointer2,
   Play,
+  RefreshCw,
+  Repeat,
   Sparkles,
   Sun,
-  Target
+  Target,
+  Users
 } from "lucide-react";
 import "./styles.css";
 
@@ -131,19 +134,95 @@ const cases = [
 ];
 
 const clients = [
-  { name: "Freedom Broker", wordmark: true },
-  { name: "BI Group", logo: "/clients-mono/bi-group.png" },
-  { name: "HONOR", logo: "/clients-mono/honor.png" },
-  { name: "Salam Bro", logo: "/clients-mono/salam-bro.png" },
-  { name: "H&M", logo: "/clients-mono/hm.png" },
-  { name: "Flash Energy Drink", logo: "/clients-mono/flash-energy.png" }
+  { name: "BI Group", logo: "/clients/bi-group.svg" },
+  { name: "HONOR", logo: "/clients/honor.svg", size: "sm" },
+  { name: "H&M", logo: "/clients/hm.svg" },
+  { name: "Freedom", logo: "/clients/freedom.svg", size: "sm" },
+  { name: "Salam Bro", logo: "/clients/salam-bro-color.png", tile: "#003d7b" },
+  { name: "Hyundai", logo: "/clients/hyundai.svg" }
+];
+
+const starters = [
+  {
+    icon: Play,
+    tag: "Reels",
+    title: "Рилс-старт",
+    text: "Три готовых вертикальных видео за один выезд: сценарии, съёмка до 2 часов, монтаж, цвет и субтитры. Готово за 5 рабочих дней.",
+    message: "Здравствуйте! Хочу заказать Рилс-старт: 3 вертикальных видео."
+  },
+  {
+    icon: Clapperboard,
+    tag: "Мероприятия",
+    title: "Экспресс-съёмка события",
+    text: "Для презентаций, открытий и небольших ивентов: съёмка до 2 часов, фотоотчёт, рекап-ролик за 48 часов и сторис в день события.",
+    message: "Здравствуйте! Хочу заказать экспресс-съёмку мероприятия."
+  },
+  {
+    icon: Camera,
+    tag: "Имидж",
+    title: "Имиджевый ролик",
+    text: "Ролик о компании, продукте или объекте для сайта, рекламы и соцсетей: сценарий, съёмка с дроном при необходимости, 60–90 сек и 2 нарезки.",
+    message: "Здравствуйте! Хочу обсудить имиджевый ролик."
+  }
 ];
 
 const process = [
-  "Бриф и аудит",
-  "Стратегия и визуальная система",
-  "Съёмка, монтаж, публикации",
-  "Аналитика и рост"
+  { when: "День 1", title: "Бриф", text: "Созваниваемся на 20 минут, разбираем задачу, аудиторию и сроки." },
+  { when: "1–2 дня", title: "План и договор", text: "Присылаем план съёмок, сценарии и договор. Вы утверждаете." },
+  { when: "По графику", title: "Съёмка и монтаж", text: "Снимаем в вашем городе, монтируем и согласовываем с вами." },
+  { when: "Каждый месяц", title: "Отчёт и рост", text: "Показываем цифры и предлагаем, что улучшить дальше." }
+];
+
+const cities = ["Алматы", "Астана", "Шымкент", "Караганда", "Актобе", "Атырау", "Павлодар", "Усть-Каменогорск"];
+
+const faq = [
+  {
+    q: "В каких городах Казахстана вы снимаете?",
+    a: "У нас есть свои операторы в 17+ регионах Казахстана: Алматы, Астана, Шымкент, Караганда, Актобе, Атырау, Павлодар, Усть-Каменогорск и других городах. Снимаем на месте без командировочных расходов, можно одновременно в нескольких городах."
+  },
+  {
+    q: "Какие услуги оказывает Japyraq Media?",
+    a: "Видео- и фотосъёмка для бизнеса, Reels и короткие видео для Instagram и TikTok, съёмка мероприятий, ведение соцсетей (SMM), таргетированная реклама и креативы, имиджевые ролики, 3D, VFX и AI-видео, создание сайтов."
+  },
+  {
+    q: "Сколько стоит съёмка?",
+    a: "Стоимость зависит от формата, объёма и города. Есть разовые форматы для первого знакомства и ежемесячные пакеты. Напишите задачу в WhatsApp, и в течение 24 часов мы пришлём коммерческое предложение под ваш бюджет."
+  },
+  {
+    q: "Как быстро будет готов ролик с мероприятия?",
+    a: "Рекап-ролик с мероприятия готовим за 48 часов. Сторис и короткие видео можем выдавать прямо во время события."
+  },
+  {
+    q: "Можно ли начать с одного заказа, без абонемента?",
+    a: "Да. Можно заказать Рилс-старт, экспресс-съёмку события или имиджевый ролик. Если в течение 30 дней вы подключите ежемесячный пакет, 100% стоимости разового заказа засчитываем в первый месяц."
+  },
+  {
+    q: "Работаете ли вы официально с юрлицами?",
+    a: "Да. Заключаем договор, выставляем счёт, акт выполненных работ и ЭСФ. Оплата безналичная, 100% предоплата до начала работ."
+  },
+  {
+    q: "Что если результат не понравится?",
+    a: "В каждый ролик включены два круга правок без доплаты. Если результат не соответствует утверждённому сценарию, переснимем за свой счёт."
+  }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a }
+  }))
+};
+
+const guarantees = [
+  { icon: RefreshCw, title: "2 круга правок", text: "В каждый ролик включены два круга правок без доплаты." },
+  { icon: Clock, title: "Сроки в договоре", text: "Рекап мероприятия за 48 часов, ролики по утверждённому графику." },
+  { icon: Repeat, title: "Переснимем за свой счёт", text: "Если результат не соответствует утверждённому сценарию." },
+  { icon: FileCheck, title: "Договор и ЭСФ", text: "Работаем официально: договор, счёт, акт и ЭСФ для бухгалтерии." },
+  { icon: Users, title: "Один менеджер", text: "Один контакт и один договор на все города и форматы." },
+  { icon: MapPin, title: "Без командировочных", text: "Местные операторы в 17+ регионах: билеты и гостиницы не входят в смету." }
 ];
 
 function Particles() {
@@ -214,10 +293,11 @@ function Particles() {
 function useCountUp(value, suffix = "") {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const [display, setDisplay] = useState(0);
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!inView) return undefined;
+    setDisplay(0);
     const target = { value: 0 };
     const tween = gsap.to(target, {
       value,
@@ -290,12 +370,14 @@ function App() {
     const formData = new FormData(event.currentTarget);
     const name = String(formData.get("name") || "").trim();
     const contact = String(formData.get("contact") || "").trim();
+    const city = String(formData.get("city") || "").trim();
     const service = String(formData.get("service") || "").trim();
     const task = String(formData.get("task") || "").trim();
     const message = [
       "Здравствуйте! Хочу обсудить проект с Japyraq Media Agency.",
       name ? `Имя: ${name}` : "",
       contact ? `Контакт: ${contact}` : "",
+      city ? `Город: ${city}` : "",
       service ? `Направление: ${service}` : "",
       task ? `Задача: ${task}` : ""
     ].filter(Boolean).join("\n");
@@ -371,7 +453,9 @@ function App() {
         </a>
         <nav>
           <a href="#services">Услуги</a>
+          <a href="#start">Быстрый старт</a>
           <a href="#cases">Кейсы</a>
+          <a href="#faq">FAQ</a>
           <a href="#contact">Контакты</a>
         </nav>
         <div className="header-actions">
@@ -397,25 +481,25 @@ function App() {
             <Reveal>
               <p className="eyebrow">
                 <Sparkles size={16} />
-                Креативное медиа-агентство
+                Продакшн и SMM по всему Казахстану
               </p>
             </Reveal>
             <Reveal delay={0.08}>
-              <h1>Контент и SMM, которые делают бренд заметным каждый день</h1>
+              <h1>Снимаем контент, который приводит <span className="accent">клиентов</span></h1>
             </Reveal>
             <Reveal delay={0.16}>
               <p className="hero-text">
-                Japyraq Media Agency помогает бизнесу выглядеть уверенно в соцсетях: создаём контент, ведём Instagram,
-                снимаем события и запускаем кампании, которые приводят заявки.
+                Видео, фото, Reels и ведение соцсетей для бизнеса и мероприятий. Местные команды в 17+ регионах:
+                снимаем в вашем городе без командировочных расходов.
               </p>
             </Reveal>
             <Reveal className="hero-actions" delay={0.24}>
               <a className="btn primary" href={createWhatsAppUrl()} target="_blank" rel="noreferrer">
-                Обсудить проект
+                Подобрать формат за 24 часа
                 <ArrowUpRight size={18} />
               </a>
               <a className="btn ghost" href="#cases">
-                Смотреть подход
+                Смотреть кейсы
                 <ChevronRight size={18} />
               </a>
             </Reveal>
@@ -432,10 +516,10 @@ function App() {
                 <p>Рекап события</p>
               </div>
               <div className="insight-panel">
-                <LineChart size={20} />
+                <Clock size={20} />
                 <div>
-                  <b>+62%</b>
-                  <span>органический охват</span>
+                  <b>48 часов</b>
+                  <span>на рекап после события</span>
                 </div>
               </div>
             </div>
@@ -452,14 +536,20 @@ function App() {
 
         <section className="metrics-section">
           <Reveal className="section-intro">
-            <p className="eyebrow">Почему это работает</p>
-            <h2>Системный контент вместо случайных публикаций</h2>
+            <p className="eyebrow">Почему Japyraq</p>
+            <h2>Одна команда на весь Казахстан</h2>
           </Reveal>
           <div className="metrics-grid">
             <Counter value={100} suffix="+" label="реализованных проектов" />
             <Counter value={48} suffix="ч" label="на быстрый монтаж ивент-рекапа" />
             <Counter value={17} suffix="+" label="регионов Казахстана: у нас есть люди в городах по всей стране для съёмок, контента и ведения проектов" />
           </div>
+          <Reveal>
+            <p className="city-row">
+              <MapPin size={16} />
+              Снимаем в городах: {cities.join(", ")} и ещё 8+ регионах
+            </p>
+          </Reveal>
         </section>
 
         <section className="services" id="services">
@@ -486,6 +576,41 @@ function App() {
               );
             })}
           </div>
+        </section>
+
+        <section className="starters" id="start">
+          <Reveal className="section-intro wide">
+            <p className="eyebrow">Быстрый старт</p>
+            <h2>Начните с одного проекта</h2>
+            <p>Оцените качество и скорость на небольшом заказе, прежде чем подключать ежемесячную работу.</p>
+          </Reveal>
+          <div className="starter-grid">
+            {starters.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <Reveal key={item.title} delay={index * 0.06}>
+                  <div className="starter-card">
+                    <span className="starter-tag">
+                      <Icon size={16} />
+                      {item.tag}
+                    </span>
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                    <a className="btn ghost" href={createWhatsAppUrl(item.message)} target="_blank" rel="noreferrer">
+                      Узнать стоимость
+                      <ArrowUpRight size={18} />
+                    </a>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+          <Reveal>
+            <div className="credit-note">
+              <strong>100%</strong>
+              <p>стоимости разового заказа засчитываем в первый месяц любого пакета, если вы подключите его в течение 30 дней. Оплаченное не сгорает, а переходит в абонемент.</p>
+            </div>
+          </Reveal>
         </section>
 
         <section className="cases" id="cases">
@@ -532,15 +657,13 @@ function App() {
             <p>В портфеле Japyraq Media Agency — съёмки и контент для крупных компаний. У нас есть люди в городах Казахстана: снимаем мероприятия, собираем рилс, сторис и фотоотчёты без привязки к одному городу.</p>
           </Reveal>
           <Reveal>
-            <div className="client-logo-marquee" aria-label="??????? Japyraq Media Agency">
+            <div className="client-logo-marquee" aria-label="Клиенты Japyraq Media Agency">
               <div>
-                {[...clients, ...clients, ...clients, ...clients].map((client, index) => (
+                {[...clients, ...clients, ...clients].map((client, index) => (
                   <span className="client-logo-item" key={client.name + '-' + index}>
-                    {client.wordmark ? (
-                      <strong className="freedom-wordmark">Freedom<br />Broker</strong>
-                    ) : (
-                      <img src={client.logo} alt={client.name} loading="lazy" />
-                    )}
+                    <span className={`client-logo-tile ${client.size || ""}`} style={client.tile ? { background: client.tile } : undefined}>
+                      <img src={client.logo} alt={index < clients.length ? client.name : ""} loading="lazy" />
+                    </span>
                   </span>
                 ))}
               </div>
@@ -551,41 +674,69 @@ function App() {
         <section className="workflow" id="workflow">
           <Reveal className="workflow-copy">
             <p className="eyebrow">Процесс</p>
-            <h2>Прозрачно от первой идеи до отчёта</h2>
+            <h2>От заявки до результата</h2>
             <p>
-              Команда заранее планирует съёмки, рубрики и рекламные гипотезы, поэтому контент выходит регулярно,
-              а решения принимаются по цифрам.
+              Каждый этап с понятным сроком: вы всегда знаете, что происходит и что будет дальше.
             </p>
           </Reveal>
           <div className="steps">
             {process.map((step, index) => (
-              <Reveal key={step} delay={index * 0.06}>
+              <Reveal key={step.title} delay={index * 0.06}>
                 <div className="step">
                   <span>{index + 1}</span>
-                  <p>{step}</p>
+                  <div>
+                    <em>{step.when}</em>
+                    <p>{step.title}</p>
+                    <small>{step.text}</small>
+                  </div>
                 </div>
               </Reveal>
             ))}
           </div>
         </section>
 
-        <section className="proof">
-          <Reveal>
-            <div className="proof-card">
-              <BadgeCheck size={30} />
-              <blockquote>
-                “Сильный Instagram сейчас выглядит не как витрина, а как медиа: регулярно, живо, понятно и с точкой
-                входа для клиента.”
-              </blockquote>
-              <p>Japyraq Media Agency</p>
-            </div>
+        <section className="guarantees" id="guarantees">
+          <Reveal className="section-intro">
+            <p className="eyebrow">Гарантии</p>
+            <h2>Работаем по договору и отвечаем за результат</h2>
           </Reveal>
+          <div className="guarantee-grid">
+            {guarantees.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <Reveal key={item.title} delay={index * 0.05}>
+                  <div className="guarantee-card">
+                    <Icon size={24} />
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="faq" id="faq">
+          <Reveal className="section-intro">
+            <p className="eyebrow">Вопросы и ответы</p>
+            <h2>Частые вопросы о съёмке</h2>
+          </Reveal>
+          <div className="faq-list">
+            {faq.map((item) => (
+              <details key={item.q} className="faq-item">
+                <summary>{item.q}</summary>
+                <p>{item.a}</p>
+              </details>
+            ))}
+          </div>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
         </section>
 
         <section className="contact" id="contact">
           <Reveal className="contact-copy">
             <p className="eyebrow">Заявка</p>
-            <h2>Расскажите, какой результат нужен в соцсетях</h2>
+            <h2>Подберём формат за 24 часа</h2>
+            <p className="contact-lead">Напишите задачу и город. Ответим в WhatsApp, предложим формат, сроки и стоимость под ваш бюджет.</p>
             <div className="contact-links">
               <a href="https://www.instagram.com/japyraq.media.agency/" target="_blank" rel="noreferrer">
                 <AtSign size={18} />
@@ -613,11 +764,16 @@ function App() {
                 <input name="contact" type="text" placeholder="Instagram, WhatsApp или телефон" />
               </label>
               <label>
+                Город
+                <input name="city" type="text" placeholder="Где нужна съёмка?" />
+              </label>
+              <label>
                 Что нужно?
                 <select name="service" defaultValue="">
                   <option value="" disabled>
                     Выберите направление
                   </option>
+                  <option>Разовая съёмка</option>
                   <option>SMM под ключ</option>
                   <option>Контент-съёмка</option>
                   <option>Съёмка мероприятий</option>
@@ -640,6 +796,10 @@ function App() {
         </section>
       </main>
 
+      <a className="wa-float" href={createWhatsAppUrl()} target="_blank" rel="noreferrer" aria-label="Написать в WhatsApp">
+        <MessageCircle size={26} />
+      </a>
+
       <footer>
         <span>Japyraq Media Agency © {year}</span>
         <a href={createWhatsAppUrl()} target="_blank" rel="noreferrer">
@@ -651,4 +811,10 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+export default App;
+
+if (typeof document !== "undefined") {
+  const root = document.getElementById("root");
+  root.replaceChildren();
+  createRoot(root).render(<App />);
+}
