@@ -913,6 +913,115 @@ section {
   margin: 0;
 }
 
+.lang-switch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+}
+
+.lang-switch a {
+  min-width: 34px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+  text-align: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lang-switch a:hover {
+  color: var(--ink);
+}
+
+.lang-switch a.is-active {
+  color: #fff;
+  background: var(--green);
+}
+
+:root[data-theme="dark"] .lang-switch a.is-active {
+  color: #050505;
+}
+
+.cities {
+  padding: 24px 0 8px;
+}
+
+.cities-head .eyebrow {
+  margin-bottom: 8px;
+}
+
+.cities-head h2 {
+  margin-bottom: 16px;
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  line-height: 1.25;
+}
+
+.city-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.city-item {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+}
+
+.city-item[open] {
+  flex-basis: 100%;
+  border-radius: 12px;
+}
+
+.city-item summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 750;
+  list-style: none;
+}
+
+.city-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.city-item summary svg,
+.city-item[open] summary {
+  color: var(--green);
+}
+
+.city-body {
+  padding: 0 16px 14px;
+}
+
+.city-body h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.city-body p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.city-body a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--green);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
 .city-row {
   display: flex;
   flex-wrap: wrap;
@@ -1214,6 +1323,12 @@ footer a {
 
   .header-actions {
     gap: 4px;
+  }
+
+  .lang-switch a {
+    min-width: 28px;
+    padding: 5px 5px;
+    font-size: 0.7rem;
   }
 
   .theme-toggle {
