@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
@@ -23,6 +23,7 @@ import {
   Target,
   Users
 } from "lucide-react";
+import { LANGS, content, langFromPath } from "./content.js";
 import "./styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -30,9 +31,7 @@ gsap.registerPlugin(ScrollTrigger);
 const LIGHT_LOGO = "/brand/japyraq-logo-light.png";
 const DARK_LOGO = "/brand/japyraq-logo-dark.png";
 const WHATSAPP_NUMBER = "77789800485";
-const DEFAULT_WHATSAPP_MESSAGE = "Здравствуйте! Хочу обсудить проект с Japyraq Media Agency.";
-
-function createWhatsAppUrl(message = DEFAULT_WHATSAPP_MESSAGE) {
+function createWhatsAppUrl(message) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
@@ -43,111 +42,23 @@ function getInitialTheme() {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-const services = [
-  {
-    icon: Camera,
-    title: "Контент-продакшн",
-    text: "Фото, видео, рилс, сторис и визуальные системы, которые держат ленту живой и узнаваемой.",
-    tags: ["Рилс", "Сторис", "Фото"]
-  },
-  {
-    icon: Megaphone,
-    title: "SMM под ключ",
-    text: "Стратегия, контент-план, упаковка профиля, публикации и регулярная аналитика роста.",
-    tags: ["Стратегия", "Постинг", "Аналитика"]
-  },
-  {
-    icon: Clapperboard,
-    title: "Съёмка мероприятий",
-    text: "Оперативная съёмка событий для брендов: фото, видео, рилс, сторис и монтаж коротких роликов в день мероприятия.",
-    tags: ["Ивенты", "Рекап", "Лайв"]
-  },
-  {
-    icon: Target,
-    title: "Запуски и реклама",
-    text: "Креативы, воронки, таргет и посадочные сценарии, чтобы внимание превращалось в заявки.",
-    tags: ["Реклама", "Воронки", "Заявки"]
-  },
-  {
-    icon: MousePointer2,
-    title: "Создание сайтов",
-    text: "Лендинги и сайты под заявки: структура, дизайн, адаптив, анимации и понятный путь клиента до WhatsApp.",
-    tags: ["Лендинг", "Дизайн", "Заявки"]
-  },
-  {
-    icon: Play,
-    title: "3D ролики и VFX",
-    text: "Имиджевые 3D-визуалы, продуктовые анимации, VFX-вставки и ролики, которые выделяют бренд в ленте.",
-    tags: ["3D", "VFX", "Motion"]
-  },
-  {
-    icon: Sparkles,
-    title: "AI ролики",
-    text: "AI-видео для рекламы и соцсетей: генерация сцен, быстрые креативы, стилизация и адаптация под Reels.",
-    tags: ["AI video", "Reels", "Креативы"]
-  }
+const serviceIcons = [Camera, Megaphone, Clapperboard, Target, MousePointer2, Play, Sparkles];
+const starterIcons = [Play, Clapperboard, Camera];
+const guaranteeIcons = [Clock, Repeat, FileCheck, Users, MapPin];
+
+const caseMedia = [
+  { kind: "EVENT", cover: "/cases/shymkent.jpg", video: "/cases/shymkent.mp4", href: "https://www.instagram.com/reel/DeFQ4IvB2De/" },
+  { kind: "VIDEO", cover: "/cases/event.jpg", video: "/cases/event.mp4", href: "https://www.instagram.com/p/DQAI7mciO2k/" },
+  { kind: "PHOTO", cover: "/cases/food.jpg", href: "https://www.instagram.com/p/DO9GmtIiBMs/?img_index=1" },
+  { kind: "REELS", cover: "/cases/drone.jpg", video: "/cases/drone.mp4", href: "https://www.instagram.com/p/DPBVe1tCHcz/" },
+  { kind: "3D", cover: "/cases/game.jpg", video: "/cases/game.mp4", href: "https://www.instagram.com/reel/DV_FsZPDETD/" },
+  { kind: "SMM", cover: "/cases/chessinedu-avatar.jpg", fit: "logo", href: "https://www.instagram.com/chessinedu/" }
 ];
 
-const cases = [
-  {
-    name: "Закладка клиники в Шымкенте",
-    label: "Репортаж",
-    result: "500+ гостей / официальная церемония",
-    kind: "EVENT",
-    text: "Репортажный ролик с церемонии закладки капсулы строительства клиники: выступления, ключевые моменты, атмосфера и масштаб будущего проекта.",
-    cover: "/cases/shymkent.jpg",
-    video: "/cases/shymkent.mp4",
-    href: "https://www.instagram.com/reel/DeFQ4IvB2De/"
-  },
-  {
-    name: "Event coverage",
-    label: "Фото + видео",
-    result: "ивенты / форумы / бренды",
-    kind: "VIDEO",
-    text: "Репортажная съёмка мероприятий для брендов: короткие ролики, фотоотчёт, сторис и быстрый монтаж для Instagram в день события.",
-    cover: "/cases/event.jpg",
-    video: "/cases/event.mp4",
-    href: "https://www.instagram.com/p/DQAI7mciO2k/"
-  },
-  {
-    name: "Food & product content",
-    label: "Контент для бренда",
-    result: "кафе / рестораны / товары",
-    kind: "PHOTO",
-    text: "Предметные и фуд-съёмки для ленты, меню, сторис и рекламных креативов: чистый визуал, детали продукта и продающие ракурсы.",
-    cover: "/cases/food.jpg",
-    href: "https://www.instagram.com/p/DO9GmtIiBMs/?img_index=1"
-  },
-  {
-    name: "Drone & mobile reels",
-    label: "Вертикальные видео",
-    result: "дрон / мобилография / монтаж",
-    kind: "REELS",
-    text: "Динамичные вертикальные ролики для Instagram и TikTok: съёмка на площадке, дрон-кадры, монтаж и адаптация под соцсети.",
-    cover: "/cases/drone.jpg",
-    video: "/cases/drone.mp4",
-    href: "https://www.instagram.com/p/DPBVe1tCHcz/"
-  },
-  {
-    name: "3D-визуал для игры",
-    label: "3D и моушн-дизайн",
-    result: "тизер до запуска проекта",
-    kind: "3D",
-    text: "Визуал, который погружает в атмосферу игры ещё до её запуска: динамика, детали и проработка, чтобы передать стиль и характер проекта.",
-    cover: "/cases/game.jpg",
-    video: "/cases/game.mp4",
-    href: "https://www.instagram.com/reel/DV_FsZPDETD/"
-  },
-  {
-    name: "@chessinedu",
-    label: "Instagram-ведение",
-    result: "шахматы в образовании / регионы РК",
-    kind: "SMM",
-    text: "Ведём Instagram проекта и собираем контент из разных регионов Казахстана: события, участники, образовательные инициативы и репортажи.",
-    cover: "/cases/chessinedu-avatar.jpg",
-    fit: "logo",
-    href: "https://www.instagram.com/chessinedu/"
-  }
+const heroIntroMedia = [
+  { cover: "/cases/hero-cosmetic.jpg", video: "/cases/hero-cosmetic.mp4" },
+  { cover: "/cases/hero-forte.jpg", video: "/cases/hero-forte.mp4" },
+  { cover: "/cases/hero-expert.jpg", video: "/cases/hero-expert.mp4" }
 ];
 
 const clients = [
@@ -159,87 +70,9 @@ const clients = [
   { name: "Hyundai", logo: "/clients/hyundai.svg" }
 ];
 
-const starters = [
-  {
-    icon: Play,
-    tag: "Reels",
-    title: "Рилс-старт",
-    text: "Три готовых вертикальных видео за один выезд: сценарии, съёмка до 2 часов, монтаж, цвет и субтитры. Готово за 2 дня.",
-    message: "Здравствуйте! Хочу заказать Рилс-старт: 3 вертикальных видео."
-  },
-  {
-    icon: Clapperboard,
-    tag: "Мероприятия",
-    title: "Экспресс-съёмка события",
-    text: "Для презентаций, открытий и небольших ивентов: съёмка до 2 часов, фотоотчёт, рекап-ролик за 48 часов и сторис в день события.",
-    message: "Здравствуйте! Хочу заказать экспресс-съёмку мероприятия."
-  },
-  {
-    icon: Camera,
-    tag: "Имидж",
-    title: "Имиджевый ролик",
-    text: "Ролик о компании, продукте или объекте для сайта, рекламы и соцсетей: сценарий, съёмка с дроном при необходимости, 60–90 сек и 2 нарезки.",
-    message: "Здравствуйте! Хочу обсудить имиджевый ролик."
-  }
-];
-
-const process = [
-  { when: "День 1", title: "Бриф", text: "Созваниваемся на 20 минут, разбираем задачу, аудиторию и сроки." },
-  { when: "1–2 дня", title: "План и договор", text: "Присылаем план съёмок, сценарии и договор. Вы утверждаете." },
-  { when: "По графику", title: "Съёмка и монтаж", text: "Снимаем в вашем городе, монтируем и согласовываем с вами." },
-  { when: "Каждый месяц", title: "Отчёт и рост", text: "Показываем цифры и предлагаем, что улучшить дальше." }
-];
-
-const cities = ["Алматы", "Астана", "Шымкент", "Караганда", "Актобе", "Атырау", "Павлодар", "Усть-Каменогорск"];
-
-const faq = [
-  {
-    q: "В каких городах Казахстана вы снимаете?",
-    a: "У нас есть свои операторы в 17+ регионах Казахстана: Алматы, Астана, Шымкент, Караганда, Актобе, Атырау, Павлодар, Усть-Каменогорск и других городах. Снимаем на месте без командировочных расходов, можно одновременно в нескольких городах."
-  },
-  {
-    q: "Какие услуги оказывает Japyraq Media?",
-    a: "Видео- и фотосъёмка для бизнеса, Reels и короткие видео для Instagram и TikTok, съёмка мероприятий, ведение соцсетей (SMM), таргетированная реклама и креативы, имиджевые ролики, 3D, VFX и AI-видео, создание сайтов."
-  },
-  {
-    q: "Сколько стоит съёмка?",
-    a: "Стоимость зависит от формата, объёма и города. Есть разовые форматы для первого знакомства и ежемесячные пакеты. Напишите задачу в WhatsApp, и в течение 24 часов мы пришлём коммерческое предложение под ваш бюджет."
-  },
-  {
-    q: "Как быстро будет готов ролик с мероприятия?",
-    a: "Рекап-ролик с мероприятия готовим за 48 часов. Сторис и короткие видео можем выдавать прямо во время события."
-  },
-  {
-    q: "Можно ли начать с одного заказа, без абонемента?",
-    a: "Да. Можно заказать Рилс-старт, экспресс-съёмку события или имиджевый ролик. Если в течение 30 дней вы подключите ежемесячный пакет, 100% стоимости разового заказа засчитываем в первый месяц."
-  },
-  {
-    q: "Работаете ли вы официально с юрлицами?",
-    a: "Да. Заключаем договор, выставляем счёт, акт выполненных работ и ЭСФ. Оплата безналичная, 100% предоплата до начала работ."
-  },
-  {
-    q: "Что если результат не понравится?",
-    a: "Перед съёмкой утверждаем с вами сценарий и план. Если результат не соответствует утверждённому сценарию, переснимем за свой счёт."
-  }
-];
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faq.map((item) => ({
-    "@type": "Question",
-    name: item.q,
-    acceptedAnswer: { "@type": "Answer", text: item.a }
-  }))
-};
-
-const guarantees = [
-  { icon: Clock, title: "Сроки в договоре", text: "Рекап мероприятия за 48 часов, ролики по утверждённому графику." },
-  { icon: Repeat, title: "Переснимем за свой счёт", text: "Если результат не соответствует утверждённому сценарию." },
-  { icon: FileCheck, title: "Договор и ЭСФ", text: "Работаем официально: договор, счёт, акт и ЭСФ для бухгалтерии." },
-  { icon: Users, title: "Один менеджер", text: "Один контакт и один договор на все города и форматы." },
-  { icon: MapPin, title: "Без командировочных", text: "Местные операторы в 17+ регионах: билеты и гостиницы не входят в смету." }
-];
+function withText(media, texts) {
+  return media.map((item, index) => ({ ...item, ...texts[index] }));
+}
 
 function InstagramIcon({ size = 18 }) {
   return (
@@ -290,16 +123,9 @@ function CaseMedia({ item }) {
   );
 }
 
-const heroIntro = [
-  { name: "Reels для косметического бренда", label: "Реклама продукта", cover: "/cases/hero-cosmetic.jpg", video: "/cases/hero-cosmetic.mp4" },
-  { name: "Розыгрыш ForteBank", label: "Эмоции победителя", cover: "/cases/hero-forte.jpg", video: "/cases/hero-forte.mp4" },
-  { name: "Экспертный ролик для бизнеса", label: "Экспертный контент", cover: "/cases/hero-expert.jpg", video: "/cases/hero-expert.mp4" }
-];
-
-const heroReels = [...heroIntro, ...cases.filter((item) => item.fit !== "logo")];
 const REEL_MS = 3400;
 
-function HeroReel() {
+function HeroReel({ reels, t }) {
   const reduceMotion = useReducedMotion();
   const [active, setActive] = useState(0);
   const [seconds, setSeconds] = useState(0);
@@ -307,13 +133,13 @@ function HeroReel() {
 
   useEffect(() => {
     if (reduceMotion) return undefined;
-    const slide = window.setInterval(() => setActive((i) => (i + 1) % heroReels.length), REEL_MS);
+    const slide = window.setInterval(() => setActive((i) => (i + 1) % reels.length), REEL_MS);
     const clock = window.setInterval(() => setSeconds((s) => s + 1), 1000);
     return () => {
       window.clearInterval(slide);
       window.clearInterval(clock);
     };
-  }, [reduceMotion]);
+  }, [reduceMotion, reels.length]);
 
   const onMove = (event) => {
     const node = wrapRef.current;
@@ -328,14 +154,14 @@ function HeroReel() {
     wrapRef.current?.style.setProperty("--ry", "0deg");
   };
 
-  const current = heroReels[active];
+  const current = reels[active];
   const rec = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 
   return (
     <div className="reel-stage" ref={wrapRef} onMouseMove={onMove} onMouseLeave={onLeave} data-parallax="-10">
       <div className="reel-glow" aria-hidden="true" />
       <div className="reel-phone">
-        {heroReels.map((item, index) =>
+        {reels.map((item, index) =>
           index === active && item.video && !reduceMotion ? (
             <video
               key={item.cover}
@@ -359,7 +185,7 @@ function HeroReel() {
         )}
         <div className="reel-shade" aria-hidden="true" />
         <div className="reel-bars" aria-hidden="true">
-          {heroReels.map((item, index) => (
+          {reels.map((item, index) => (
             <span key={item.cover} className={index < active ? "done" : ""}>
               {index === active && <i key={active} style={{ animationDuration: `${REEL_MS}ms` }} />}
             </span>
@@ -377,15 +203,15 @@ function HeroReel() {
       <div className="reel-chip reel-chip-a">
         <Clock size={18} />
         <div>
-          <b>48 часов</b>
-          <span>на рекап после события</span>
+          <b>{t.hero.chipA[0]}</b>
+          <span>{t.hero.chipA[1]}</span>
         </div>
       </div>
       <div className="reel-chip reel-chip-b">
         <MapPin size={18} />
         <div>
-          <b>17+ регионов</b>
-          <span>снимаем в вашем городе</span>
+          <b>{t.hero.chipB[0]}</b>
+          <span>{t.hero.chipB[1]}</span>
         </div>
       </div>
       <div className="reel-chip reel-chip-c">
@@ -529,7 +355,24 @@ function TiltCard({ children, className = "" }) {
   );
 }
 
-function App() {
+function App({ lang = "ru" }) {
+  const t = content[lang] || content.ru;
+  const services = withText(serviceIcons.map((icon) => ({ icon })), t.services.items);
+  const starters = withText(starterIcons.map((icon) => ({ icon })), t.starters.items);
+  const guarantees = withText(guaranteeIcons.map((icon) => ({ icon })), t.guarantees.items);
+  const cases = withText(caseMedia, t.cases.items);
+  const heroReels = [...withText(heroIntroMedia, t.heroIntro), ...cases.filter((item) => item.fit !== "logo")];
+  const cityNames = t.cities.items.map((item) => item.city);
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    inLanguage: t.meta.htmlLang,
+    mainEntity: t.faq.items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a }
+    }))
+  };
   const year = new Date().getFullYear();
   const reduceMotion = useReducedMotion();
   const [theme, setTheme] = useState(getInitialTheme);
@@ -545,12 +388,12 @@ function App() {
     const service = String(formData.get("service") || "").trim();
     const task = String(formData.get("task") || "").trim();
     const message = [
-      "Здравствуйте! Хочу обсудить проект с Japyraq Media Agency.",
-      name ? `Имя: ${name}` : "",
-      contact ? `Контакт: ${contact}` : "",
-      city ? `Город: ${city}` : "",
-      service ? `Направление: ${service}` : "",
-      task ? `Задача: ${task}` : ""
+      t.wa.default,
+      name ? `${t.wa.name}: ${name}` : "",
+      contact ? `${t.wa.contact}: ${contact}` : "",
+      city ? `${t.wa.city}: ${city}` : "",
+      service ? `${t.wa.service}: ${service}` : "",
+      task ? `${t.wa.task}: ${task}` : ""
     ].filter(Boolean).join("\n");
 
     window.location.href = createWhatsAppUrl(message);
@@ -613,29 +456,38 @@ function App() {
     };
   }, [reduceMotion]);
 
-  const marquee = useMemo(() => ["SMM", "КОНТЕНТ", "ИВЕНТЫ", "РИЛС", "РЕКЛАМА", "СТРАТЕГИЯ"], []);
+  const marquee = t.marquee;
+  const waUrl = createWhatsAppUrl(t.wa.default);
 
   return (
     <>
       <Particles />
       <header className="site-header">
-        <a href="#top" className="brand" aria-label="Clients of Japyraq Media Agency">
+        <a href={LANGS[lang].path} className="brand" aria-label="Japyraq Media Agency">
           <img src={logoSrc} alt="" />
         </a>
         <nav>
-          <a href="#services">Услуги</a>
-          <a href="#start">Быстрый старт</a>
-          <a href="#cases">Кейсы</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">Контакты</a>
+          <a href="#services">{t.nav.services}</a>
+          <a href="#start">{t.nav.start}</a>
+          <a href="#cases">{t.nav.cases}</a>
+          <a href="#cities">{t.nav.cities}</a>
+          <a href="#faq">{t.nav.faq}</a>
+          <a href="#contact">{t.nav.contact}</a>
         </nav>
         <div className="header-actions">
+          <div className="lang-switch" role="navigation" aria-label={t.ui.langLabel}>
+            {Object.entries(LANGS).map(([code, item]) => (
+              <a key={code} href={item.path} hrefLang={item.hreflang} className={code === lang ? "is-active" : ""} aria-current={code === lang ? "page" : undefined}>
+                {item.label}
+              </a>
+            ))}
+          </div>
           <button
             className="theme-toggle"
             type="button"
             onClick={() => setTheme(isDark ? "light" : "dark")}
-            aria-label={isDark ? "Включить светлую тему" : "Включить тёмную тему"}
-            title={isDark ? "Светлая тема" : "Тёмная тема"}
+            aria-label={isDark ? t.ui.themeToLight : t.ui.themeToDark}
+            title={isDark ? t.ui.themeLight : t.ui.themeDark}
           >
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
@@ -652,32 +504,31 @@ function App() {
             <Reveal>
               <p className="eyebrow">
                 <Sparkles size={16} />
-                Продакшн и SMM по всему Казахстану
+                {t.hero.eyebrow}
               </p>
             </Reveal>
             <Reveal delay={0.08}>
-              <h1>Снимаем контент, который приводит <span className="accent">клиентов</span></h1>
+              <h1>{t.hero.titleStart}<span className="accent">{t.hero.titleAccent}</span>{t.hero.titleEnd || ""}</h1>
             </Reveal>
             <Reveal delay={0.16}>
               <p className="hero-text">
-                Видео, фото, Reels и ведение соцсетей для бизнеса и мероприятий. Местные команды в 17+ регионах:
-                снимаем в вашем городе без командировочных расходов.
+                {t.hero.text}
               </p>
             </Reveal>
             <Reveal className="hero-actions" delay={0.24}>
-              <a className="btn primary" href={createWhatsAppUrl()} target="_blank" rel="noreferrer">
-                Подобрать формат за 24 часа
+              <a className="btn primary" href={waUrl} target="_blank" rel="noreferrer">
+                {t.hero.cta}
                 <ArrowUpRight size={18} />
               </a>
               <a className="btn ghost" href="#cases">
-                Смотреть кейсы
+                {t.hero.ghost}
                 <ChevronRight size={18} />
               </a>
             </Reveal>
           </div>
 
           <Reveal className="hero-visual" delay={0.18}>
-            <HeroReel />
+            <HeroReel reels={heroReels} t={t} />
           </Reveal>
         </section>
 
@@ -691,26 +542,26 @@ function App() {
 
         <section className="metrics-section">
           <Reveal className="section-intro">
-            <p className="eyebrow">Почему Japyraq</p>
-            <h2>Одна команда на весь Казахстан</h2>
+            <p className="eyebrow">{t.metrics.eyebrow}</p>
+            <h2>{t.metrics.title}</h2>
           </Reveal>
           <div className="metrics-grid">
-            <Counter value={100} suffix="+" label="реализованных проектов" />
-            <Counter value={48} suffix="ч" label="на быстрый монтаж ивент-рекапа" />
-            <Counter value={17} suffix="+" label="регионов Казахстана: у нас есть люди в городах по всей стране для съёмок, контента и ведения проектов" />
+            {t.metrics.items.map((item) => (
+              <Counter key={item.label} value={item.value} suffix={item.suffix} label={item.label} />
+            ))}
           </div>
           <Reveal>
             <p className="city-row">
               <MapPin size={16} />
-              Снимаем в городах: {cities.join(", ")} и ещё 8+ регионах
+              {t.metrics.cityRow} {cityNames.slice(0, 8).join(", ")} {t.metrics.cityMore}
             </p>
           </Reveal>
         </section>
 
         <section className="services" id="services">
           <Reveal className="section-intro wide">
-            <p className="eyebrow">Услуги</p>
-            <h2>Собираем медиа-систему под вашу цель</h2>
+            <p className="eyebrow">{t.services.eyebrow}</p>
+            <h2>{t.services.title}</h2>
           </Reveal>
           <div className="service-grid">
             {services.map((service, index) => {
@@ -735,9 +586,9 @@ function App() {
 
         <section className="starters" id="start">
           <Reveal className="section-intro wide">
-            <p className="eyebrow">Быстрый старт</p>
-            <h2>Начните с одного проекта</h2>
-            <p>Оцените качество и скорость на небольшом заказе, прежде чем подключать ежемесячную работу.</p>
+            <p className="eyebrow">{t.starters.eyebrow}</p>
+            <h2>{t.starters.title}</h2>
+            <p>{t.starters.text}</p>
           </Reveal>
           <div className="starter-grid">
             {starters.map((item, index) => {
@@ -752,7 +603,7 @@ function App() {
                     <h3>{item.title}</h3>
                     <p>{item.text}</p>
                     <a className="btn ghost" href={createWhatsAppUrl(item.message)} target="_blank" rel="noreferrer">
-                      Узнать стоимость
+                      {t.starters.button}
                       <ArrowUpRight size={18} />
                     </a>
                   </div>
@@ -763,20 +614,20 @@ function App() {
           <Reveal>
             <div className="credit-note">
               <strong>100%</strong>
-              <p>стоимости разового заказа засчитываем в первый месяц любого пакета, если вы подключите его в течение 30 дней. Оплаченное не сгорает, а переходит в абонемент.</p>
+              <p>{t.starters.credit}</p>
             </div>
           </Reveal>
         </section>
 
         <section className="cases" id="cases">
           <Reveal className="section-intro">
-            <p className="eyebrow">Кейсы из Instagram</p>
-            <h2>Instagram-кейсы и контент из регионов Казахстана</h2>
+            <p className="eyebrow">{t.cases.eyebrow}</p>
+            <h2>{t.cases.title}</h2>
           </Reveal>
           <div className="case-grid">
             {cases.map((item, index) => (
               <Reveal key={item.name} delay={index * 0.06}>
-                <a className="case-link" href={item.href} target="_blank" rel="noreferrer" aria-label={`Открыть кейс ${item.name} в Instagram`}>
+                <a className="case-link" href={item.href} target="_blank" rel="noreferrer" aria-label={`${t.cases.open} ${item.name}`}>
                   <article className={`case-tile ${item.fit === "logo" ? "case-tile-logo" : ""}`}>
                     <CaseMedia item={item} />
                     <div className="case-shade" />
@@ -796,21 +647,44 @@ function App() {
             ))}
           </div>
           <p className="case-more">
-            Больше работ в Instagram{" "}
+            {t.cases.more}{" "}
             <a href="https://www.instagram.com/japyraq.media.agency/" target="_blank" rel="noreferrer">
               @japyraq.media.agency
             </a>
           </p>
         </section>
 
+        <section className="cities" id="cities">
+          <Reveal className="section-intro wide">
+            <p className="eyebrow">{t.cities.eyebrow}</p>
+            <h2>{t.cities.title}</h2>
+            <p>{t.cities.text}</p>
+          </Reveal>
+          <div className="city-grid">
+            {t.cities.items.map((item, index) => (
+              <Reveal key={item.city} delay={(index % 4) * 0.05}>
+                <article className="city-card">
+                  <MapPin size={20} />
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                  <a href={createWhatsAppUrl(t.cities.message(item.city))} target="_blank" rel="noreferrer">
+                    {t.cities.order}
+                    <ArrowUpRight size={16} />
+                  </a>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
         <section className="trust" id="trust">
           <Reveal className="section-intro wide">
-            <p className="eyebrow">Нам доверяют</p>
-            <h2>Снимаем мероприятия и контент для сильных брендов</h2>
-            <p>В портфеле Japyraq Media Agency — съёмки и контент для крупных компаний. У нас есть люди в городах Казахстана: снимаем мероприятия, собираем рилс, сторис и фотоотчёты без привязки к одному городу.</p>
+            <p className="eyebrow">{t.trust.eyebrow}</p>
+            <h2>{t.trust.title}</h2>
+            <p>{t.trust.text}</p>
           </Reveal>
           <Reveal>
-            <div className="client-logo-marquee" aria-label="Клиенты Japyraq Media Agency">
+            <div className="client-logo-marquee" aria-label={t.trust.aria}>
               <div>
                 {[...clients, ...clients, ...clients].map((client, index) => (
                   <span className="client-logo-item" key={client.name + '-' + index}>
@@ -826,14 +700,12 @@ function App() {
 
         <section className="workflow" id="workflow">
           <Reveal className="workflow-copy">
-            <p className="eyebrow">Процесс</p>
-            <h2>От заявки до результата</h2>
-            <p>
-              Каждый этап с понятным сроком: вы всегда знаете, что происходит и что будет дальше.
-            </p>
+            <p className="eyebrow">{t.process.eyebrow}</p>
+            <h2>{t.process.title}</h2>
+            <p>{t.process.text}</p>
           </Reveal>
           <div className="steps">
-            {process.map((step, index) => (
+            {t.process.items.map((step, index) => (
               <Reveal key={step.title} delay={index * 0.06}>
                 <div className="step">
                   <span>{index + 1}</span>
@@ -850,8 +722,8 @@ function App() {
 
         <section className="guarantees" id="guarantees">
           <Reveal className="section-intro">
-            <p className="eyebrow">Гарантии</p>
-            <h2>Работаем по договору и отвечаем за результат</h2>
+            <p className="eyebrow">{t.guarantees.eyebrow}</p>
+            <h2>{t.guarantees.title}</h2>
           </Reveal>
           <div className="guarantee-grid">
             {guarantees.map((item, index) => {
@@ -871,11 +743,11 @@ function App() {
 
         <section className="faq" id="faq">
           <Reveal className="section-intro">
-            <p className="eyebrow">Вопросы и ответы</p>
-            <h2>Частые вопросы о съёмке</h2>
+            <p className="eyebrow">{t.faq.eyebrow}</p>
+            <h2>{t.faq.title}</h2>
           </Reveal>
           <div className="faq-list">
-            {faq.map((item) => (
+            {t.faq.items.map((item) => (
               <details key={item.q} className="faq-item">
                 <summary>{item.q}</summary>
                 <p>{item.a}</p>
@@ -887,21 +759,21 @@ function App() {
 
         <section className="contact" id="contact">
           <Reveal className="contact-copy">
-            <p className="eyebrow">Заявка</p>
-            <h2>Подберём формат за 24 часа</h2>
-            <p className="contact-lead">Напишите задачу и город. Ответим в WhatsApp, предложим формат, сроки и стоимость под ваш бюджет.</p>
+            <p className="eyebrow">{t.contact.eyebrow}</p>
+            <h2>{t.contact.title}</h2>
+            <p className="contact-lead">{t.contact.text}</p>
             <div className="contact-links">
               <a href="https://www.instagram.com/japyraq.media.agency/" target="_blank" rel="noreferrer">
                 <InstagramIcon size={18} />
                 @japyraq.media.agency
               </a>
-              <a href={createWhatsAppUrl()} target="_blank" rel="noreferrer">
+              <a href={waUrl} target="_blank" rel="noreferrer">
                 <MessageCircle size={18} />
                 WhatsApp +7 778 980 04 85
               </a>
               <span>
                 <MapPin size={18} />
-                Казахстан
+                {t.ui.country}
               </span>
             </div>
           </Reveal>
@@ -909,39 +781,34 @@ function App() {
           <Reveal className="form-shell" delay={0.08}>
             <form onSubmit={handleLeadSubmit}>
               <label>
-                Имя
-                <input name="name" type="text" placeholder="Как к вам обращаться?" />
+                {t.contact.name[0]}
+                <input name="name" type="text" placeholder={t.contact.name[1]} />
               </label>
               <label>
-                Контакт
-                <input name="contact" type="text" placeholder="Instagram, WhatsApp или телефон" />
+                {t.contact.contact[0]}
+                <input name="contact" type="text" placeholder={t.contact.contact[1]} />
               </label>
               <label>
-                Город
-                <input name="city" type="text" placeholder="Где нужна съёмка?" />
+                {t.contact.city[0]}
+                <input name="city" type="text" placeholder={t.contact.city[1]} />
               </label>
               <label>
-                Что нужно?
+                {t.contact.service[0]}
                 <select name="service" defaultValue="">
                   <option value="" disabled>
-                    Выберите направление
+                    {t.contact.service[1]}
                   </option>
-                  <option>Разовая съёмка</option>
-                  <option>SMM под ключ</option>
-                  <option>Контент-съёмка</option>
-                  <option>Съёмка мероприятий</option>
-                  <option>Реклама и запуск</option>
-                  <option>Создание сайта</option>
-                  <option>3D ролик / VFX</option>
-                  <option>AI ролик</option>
+                  {t.contact.options.map((option) => (
+                    <option key={option}>{option}</option>
+                  ))}
                 </select>
               </label>
               <label>
-                Задача
-                <textarea name="task" placeholder="Коротко опишите бренд, нишу и цель" />
+                {t.contact.task[0]}
+                <textarea name="task" placeholder={t.contact.task[1]} />
               </label>
               <button className="btn primary" type="submit">
-                Написать в WhatsApp
+                {t.contact.submit}
                 <MousePointer2 size={18} />
               </button>
             </form>
@@ -949,15 +816,15 @@ function App() {
         </section>
       </main>
 
-      <a className="wa-float" href={createWhatsAppUrl()} target="_blank" rel="noreferrer" aria-label="Написать в WhatsApp">
+      <a className="wa-float" href={waUrl} target="_blank" rel="noreferrer" aria-label={t.ui.writeWa}>
         <MessageCircle size={26} />
       </a>
 
       <footer>
         <span>Japyraq Media Agency © {year}</span>
-        <a href={createWhatsAppUrl()} target="_blank" rel="noreferrer">
+        <a href={waUrl} target="_blank" rel="noreferrer">
           <MessageCircle size={17} />
-          Написать в WhatsApp
+          {t.ui.writeWa}
         </a>
       </footer>
     </>
@@ -969,5 +836,5 @@ export default App;
 if (typeof document !== "undefined") {
   const root = document.getElementById("root");
   root.replaceChildren();
-  createRoot(root).render(<App />);
+  createRoot(root).render(<App lang={langFromPath(window.location.pathname)} />);
 }
