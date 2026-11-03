@@ -95,8 +95,7 @@ const cases = [
     result: "500+ гостей / официальная церемония",
     kind: "EVENT",
     text: "Репортажный ролик с церемонии закладки капсулы строительства клиники: выступления, ключевые моменты, атмосфера и масштаб будущего проекта.",
-    tags: ["репортаж", "шымкент", "ивент"],
-    gradient: "event",
+    cover: "/cases/shymkent-clinic.jpg",
     href: "https://www.instagram.com/reel/DeFQ4IvB2De/"
   },
   {
@@ -105,8 +104,7 @@ const cases = [
     result: "ивенты / форумы / бренды",
     kind: "VIDEO",
     text: "Репортажная съёмка мероприятий для брендов: короткие ролики, фотоотчёт, сторис и быстрый монтаж для Instagram в день события.",
-    tags: ["репортаж", "reels", "stories"],
-    gradient: "event",
+    cover: "/cases/event-coverage.jpg",
     href: "https://www.instagram.com/p/DQAI7mciO2k/"
   },
   {
@@ -115,8 +113,7 @@ const cases = [
     result: "кафе / рестораны / товары",
     kind: "PHOTO",
     text: "Предметные и фуд-съёмки для ленты, меню, сторис и рекламных креативов: чистый визуал, детали продукта и продающие ракурсы.",
-    tags: ["food", "product", "ads"],
-    gradient: "food",
+    cover: "/cases/food-product.jpg",
     href: "https://www.instagram.com/p/DO9GmtIiBMs/?img_index=1"
   },
   {
@@ -125,8 +122,7 @@ const cases = [
     result: "дрон / мобилография / монтаж",
     kind: "REELS",
     text: "Динамичные вертикальные ролики для Instagram и TikTok: съёмка на площадке, дрон-кадры, монтаж и адаптация под соцсети.",
-    tags: ["drone", "mobile", "shorts"],
-    gradient: "drone",
+    cover: "/cases/drone-reels.jpg",
     href: "https://www.instagram.com/p/DPBVe1tCHcz/"
   },
   {
@@ -135,8 +131,7 @@ const cases = [
     result: "тизер до запуска проекта",
     kind: "3D",
     text: "Визуал, который погружает в атмосферу игры ещё до её запуска: динамика, детали и проработка, чтобы передать стиль и характер проекта.",
-    tags: ["3d", "motion", "gamedev"],
-    gradient: "motion",
+    cover: "/cases/game-3d.jpg",
     href: "https://www.instagram.com/reel/DV_FsZPDETD/"
   },
   {
@@ -145,8 +140,8 @@ const cases = [
     result: "шахматы в образовании / регионы РК",
     kind: "SMM",
     text: "Ведём Instagram проекта и собираем контент из разных регионов Казахстана: события, участники, образовательные инициативы и репортажи.",
-    tags: ["smm", "education", "kazakhstan"],
-    gradient: "chess",
+    cover: "/cases/chessinedu-avatar.jpg",
+    fit: "logo",
     href: "https://www.instagram.com/chessinedu/"
   }
 ];
@@ -165,7 +160,7 @@ const starters = [
     icon: Play,
     tag: "Reels",
     title: "Рилс-старт",
-    text: "Три готовых вертикальных видео за один выезд: сценарии, съёмка до 2 часов, монтаж, цвет и субтитры. Готово за 5 рабочих дней.",
+    text: "Три готовых вертикальных видео за один выезд: сценарии, съёмка до 2 часов, монтаж, цвет и субтитры. Готово за 2 дня.",
     message: "Здравствуйте! Хочу заказать Рилс-старт: 3 вертикальных видео."
   },
   {
@@ -249,6 +244,92 @@ function InstagramIcon({ size = 18 }) {
       <circle cx="12" cy="12" r="4.2" />
       <circle cx="17.6" cy="6.4" r="0.6" fill="currentColor" stroke="none" />
     </svg>
+  );
+}
+
+const heroReels = cases.filter((item) => item.fit !== "logo");
+const REEL_MS = 3400;
+
+function HeroReel() {
+  const reduceMotion = useReducedMotion();
+  const [active, setActive] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const wrapRef = useRef(null);
+
+  useEffect(() => {
+    if (reduceMotion) return undefined;
+    const slide = window.setInterval(() => setActive((i) => (i + 1) % heroReels.length), REEL_MS);
+    const clock = window.setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => {
+      window.clearInterval(slide);
+      window.clearInterval(clock);
+    };
+  }, [reduceMotion]);
+
+  const onMove = (event) => {
+    const node = wrapRef.current;
+    if (!node || window.matchMedia("(pointer: coarse)").matches) return;
+    const rect = node.getBoundingClientRect();
+    node.style.setProperty("--rx", `${((event.clientY - rect.top) / rect.height - 0.5) * -8}deg`);
+    node.style.setProperty("--ry", `${((event.clientX - rect.left) / rect.width - 0.5) * 10}deg`);
+  };
+
+  const onLeave = () => {
+    wrapRef.current?.style.setProperty("--rx", "0deg");
+    wrapRef.current?.style.setProperty("--ry", "0deg");
+  };
+
+  const current = heroReels[active];
+  const rec = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+
+  return (
+    <div className="reel-stage" ref={wrapRef} onMouseMove={onMove} onMouseLeave={onLeave} data-parallax="-10">
+      <div className="reel-glow" aria-hidden="true" />
+      <div className="reel-phone">
+        {heroReels.map((item, index) => (
+          <img
+            key={item.cover}
+            className={`reel-frame ${index === active ? "is-active" : ""}`}
+            src={item.cover}
+            alt={index === active ? item.name : ""}
+          />
+        ))}
+        <div className="reel-shade" aria-hidden="true" />
+        <div className="reel-bars" aria-hidden="true">
+          {heroReels.map((item, index) => (
+            <span key={item.cover} className={index < active ? "done" : ""}>
+              {index === active && <i key={active} style={{ animationDuration: `${REEL_MS}ms` }} />}
+            </span>
+          ))}
+        </div>
+        <div className="reel-rec" aria-hidden="true">
+          <b />
+          REC {rec}
+        </div>
+        <div className="reel-caption" key={active}>
+          <p>{current.label}</p>
+          <strong>{current.name}</strong>
+        </div>
+      </div>
+      <div className="reel-chip reel-chip-a">
+        <Clock size={18} />
+        <div>
+          <b>48 часов</b>
+          <span>на рекап после события</span>
+        </div>
+      </div>
+      <div className="reel-chip reel-chip-b">
+        <MapPin size={18} />
+        <div>
+          <b>17+ регионов</b>
+          <span>снимаем в вашем городе</span>
+        </div>
+      </div>
+      <div className="reel-chip reel-chip-c">
+        <Play size={16} fill="currentColor" />
+        <b>9:16</b>
+      </div>
+    </div>
   );
 }
 
@@ -533,23 +614,7 @@ function App() {
           </div>
 
           <Reveal className="hero-visual" delay={0.18}>
-            <div className="phone-stack" data-parallax="-10">
-              <div className="story-card story-a">
-                <span>РИЛС</span>
-                <strong>9:16</strong>
-              </div>
-              <div className="story-card story-b">
-                <Play size={34} fill="currentColor" />
-                <p>Рекап события</p>
-              </div>
-              <div className="insight-panel">
-                <Clock size={20} />
-                <div>
-                  <b>48 часов</b>
-                  <span>на рекап после события</span>
-                </div>
-              </div>
-            </div>
+            <HeroReel />
           </Reveal>
         </section>
 
@@ -647,34 +712,32 @@ function App() {
           </Reveal>
           <div className="case-grid">
             {cases.map((item, index) => (
-              <Reveal key={item.name} delay={index * 0.08}>
+              <Reveal key={item.name} delay={index * 0.06}>
                 <a className="case-link" href={item.href} target="_blank" rel="noreferrer" aria-label={`Открыть кейс ${item.name} в Instagram`}>
-                  <TiltCard className="case-card">
-                    <div className={`case-media case-media-${item.gradient}`}>
-                      <div className="case-device">
-                        <span>{item.kind}</span>
-                        <strong>{String(index + 1).padStart(2, "0")}</strong>
-                      </div>
-                      <div className="case-play">
-                        <ArrowUpRight size={20} />
-                      </div>
-                    </div>
-                    <div className="case-copy">
+                  <article className={`case-tile ${item.fit === "logo" ? "case-tile-logo" : ""}`}>
+                    <img className="case-cover" src={item.cover} alt={item.name} loading="lazy" />
+                    <div className="case-shade" />
+                    <span className="case-kind">{item.kind}</span>
+                    <span className="case-arrow">
+                      <ArrowUpRight size={18} />
+                    </span>
+                    <div className="case-info">
                       <p>{item.label}</p>
                       <h3>{item.name}</h3>
                       <strong>{item.result}</strong>
                       <span>{item.text}</span>
-                      <div className="case-tags">
-                        {item.tags.map((tag) => (
-                          <em key={tag}>#{tag}</em>
-                        ))}
-                      </div>
                     </div>
-                  </TiltCard>
+                  </article>
                 </a>
               </Reveal>
             ))}
           </div>
+          <p className="case-more">
+            Больше работ в Instagram{" "}
+            <a href="https://www.instagram.com/japyraq.media.agency/" target="_blank" rel="noreferrer">
+              @japyraq.media.agency
+            </a>
+          </p>
         </section>
 
         <section className="trust" id="trust">
