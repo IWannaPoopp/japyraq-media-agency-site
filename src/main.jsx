@@ -95,7 +95,8 @@ const cases = [
     result: "500+ гостей / официальная церемония",
     kind: "EVENT",
     text: "Репортажный ролик с церемонии закладки капсулы строительства клиники: выступления, ключевые моменты, атмосфера и масштаб будущего проекта.",
-    cover: "/cases/shymkent-clinic.jpg",
+    cover: "/cases/shymkent.jpg",
+    video: "/cases/shymkent.mp4",
     href: "https://www.instagram.com/reel/DeFQ4IvB2De/"
   },
   {
@@ -104,7 +105,8 @@ const cases = [
     result: "ивенты / форумы / бренды",
     kind: "VIDEO",
     text: "Репортажная съёмка мероприятий для брендов: короткие ролики, фотоотчёт, сторис и быстрый монтаж для Instagram в день события.",
-    cover: "/cases/event-coverage.jpg",
+    cover: "/cases/event.jpg",
+    video: "/cases/event.mp4",
     href: "https://www.instagram.com/p/DQAI7mciO2k/"
   },
   {
@@ -113,7 +115,7 @@ const cases = [
     result: "кафе / рестораны / товары",
     kind: "PHOTO",
     text: "Предметные и фуд-съёмки для ленты, меню, сторис и рекламных креативов: чистый визуал, детали продукта и продающие ракурсы.",
-    cover: "/cases/food-product.jpg",
+    cover: "/cases/food.jpg",
     href: "https://www.instagram.com/p/DO9GmtIiBMs/?img_index=1"
   },
   {
@@ -122,7 +124,8 @@ const cases = [
     result: "дрон / мобилография / монтаж",
     kind: "REELS",
     text: "Динамичные вертикальные ролики для Instagram и TikTok: съёмка на площадке, дрон-кадры, монтаж и адаптация под соцсети.",
-    cover: "/cases/drone-reels.jpg",
+    cover: "/cases/drone.jpg",
+    video: "/cases/drone.mp4",
     href: "https://www.instagram.com/p/DPBVe1tCHcz/"
   },
   {
@@ -131,7 +134,8 @@ const cases = [
     result: "тизер до запуска проекта",
     kind: "3D",
     text: "Визуал, который погружает в атмосферу игры ещё до её запуска: динамика, детали и проработка, чтобы передать стиль и характер проекта.",
-    cover: "/cases/game-3d.jpg",
+    cover: "/cases/game.jpg",
+    video: "/cases/game.mp4",
     href: "https://www.instagram.com/reel/DV_FsZPDETD/"
   },
   {
@@ -247,6 +251,45 @@ function InstagramIcon({ size = 18 }) {
   );
 }
 
+function CaseMedia({ item }) {
+  const reduceMotion = useReducedMotion();
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || reduceMotion) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) video.play().catch(() => {});
+        else video.pause();
+      },
+      { threshold: 0.45 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [reduceMotion]);
+
+  return (
+    <>
+      <img className="case-cover" src={item.cover} alt={item.name} loading="lazy" />
+      {item.video && !reduceMotion && (
+        <video
+          ref={videoRef}
+          className="case-cover case-video"
+          src={item.video}
+          poster={item.cover}
+          muted
+          loop
+          playsInline
+          preload="none"
+          aria-hidden="true"
+          onPlaying={(event) => event.currentTarget.classList.add("is-playing")}
+        />
+      )}
+    </>
+  );
+}
+
 const heroReels = cases.filter((item) => item.fit !== "logo");
 const REEL_MS = 3400;
 
@@ -286,14 +329,28 @@ function HeroReel() {
     <div className="reel-stage" ref={wrapRef} onMouseMove={onMove} onMouseLeave={onLeave} data-parallax="-10">
       <div className="reel-glow" aria-hidden="true" />
       <div className="reel-phone">
-        {heroReels.map((item, index) => (
-          <img
-            key={item.cover}
-            className={`reel-frame ${index === active ? "is-active" : ""}`}
-            src={item.cover}
-            alt={index === active ? item.name : ""}
-          />
-        ))}
+        {heroReels.map((item, index) =>
+          index === active && item.video && !reduceMotion ? (
+            <video
+              key={item.cover}
+              className="reel-frame is-active"
+              src={item.video}
+              poster={item.cover}
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-label={item.name}
+            />
+          ) : (
+            <img
+              key={item.cover}
+              className={`reel-frame ${index === active ? "is-active" : ""}`}
+              src={item.cover}
+              alt={index === active ? item.name : ""}
+            />
+          )
+        )}
         <div className="reel-shade" aria-hidden="true" />
         <div className="reel-bars" aria-hidden="true">
           {heroReels.map((item, index) => (
@@ -715,7 +772,7 @@ function App() {
               <Reveal key={item.name} delay={index * 0.06}>
                 <a className="case-link" href={item.href} target="_blank" rel="noreferrer" aria-label={`Открыть кейс ${item.name} в Instagram`}>
                   <article className={`case-tile ${item.fit === "logo" ? "case-tile-logo" : ""}`}>
-                    <img className="case-cover" src={item.cover} alt={item.name} loading="lazy" />
+                    <CaseMedia item={item} />
                     <div className="case-shade" />
                     <span className="case-kind">{item.kind}</span>
                     <span className="case-arrow">
