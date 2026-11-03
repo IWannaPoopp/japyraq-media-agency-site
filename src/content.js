@@ -109,7 +109,7 @@ const ru = {
   },
   cities: {
     eyebrow: "География",
-    title: "Видеограф, фотограф и продакшн в 18 городах Казахстана",
+    title: "Снимаем по всему Казахстану",
     text: "Свои операторы на месте: не нужно оплачивать билеты и гостиницу. Можно снимать одновременно в нескольких городах в едином стиле.",
     order: "Заказать съёмку",
     items: [
@@ -287,7 +287,7 @@ const kk = {
   },
   cities: {
     eyebrow: "География",
-    title: "Қазақстанның 18 қаласында видеограф, фотограф және продакшн",
+    title: "Бүкіл Қазақстан бойынша түсіреміз",
     text: "Операторларымыз жергілікті: билет пен қонақүйге ақы төлеудің қажеті жоқ. Бірнеше қалада бір стильде қатар түсіруге болады.",
     order: "Түсірілімге тапсырыс беру",
     items: [
@@ -464,7 +464,7 @@ const en = {
   },
   cities: {
     eyebrow: "Locations",
-    title: "Videographers, photographers and production in 18 cities of Kazakhstan",
+    title: "We film across Kazakhstan",
     text: "Our crews are local, so you don't pay for flights or hotels. We can film in several cities at once in a consistent style.",
     order: "Book a shoot",
     items: [

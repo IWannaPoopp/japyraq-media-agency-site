@@ -654,29 +654,6 @@ function App({ lang = "ru" }) {
           </p>
         </section>
 
-        <section className="cities" id="cities">
-          <Reveal className="section-intro wide">
-            <p className="eyebrow">{t.cities.eyebrow}</p>
-            <h2>{t.cities.title}</h2>
-            <p>{t.cities.text}</p>
-          </Reveal>
-          <div className="city-grid">
-            {t.cities.items.map((item, index) => (
-              <Reveal key={item.city} delay={(index % 4) * 0.05}>
-                <article className="city-card">
-                  <MapPin size={20} />
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                  <a href={createWhatsAppUrl(t.cities.message(item.city))} target="_blank" rel="noreferrer">
-                    {t.cities.order}
-                    <ArrowUpRight size={16} />
-                  </a>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
         <section className="trust" id="trust">
           <Reveal className="section-intro wide">
             <p className="eyebrow">{t.trust.eyebrow}</p>
@@ -738,6 +715,31 @@ function App({ lang = "ru" }) {
                 </Reveal>
               );
             })}
+          </div>
+        </section>
+
+        <section className="cities" id="cities">
+          <div className="cities-head">
+            <p className="eyebrow">{t.cities.eyebrow}</p>
+            <h2>{t.cities.title}</h2>
+          </div>
+          <div className="city-list">
+            {t.cities.items.map((item) => (
+              <details key={item.city} className="city-item">
+                <summary>
+                  <MapPin size={14} />
+                  {item.city}
+                </summary>
+                <div className="city-body">
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                  <a href={createWhatsAppUrl(t.cities.message(item.city))} target="_blank" rel="noreferrer">
+                    {t.cities.order}
+                    <ArrowUpRight size={14} />
+                  </a>
+                </div>
+              </details>
+            ))}
           </div>
         </section>
 

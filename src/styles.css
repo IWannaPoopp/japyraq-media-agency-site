@@ -946,57 +946,80 @@ section {
 }
 
 .cities {
-  padding-top: 40px;
+  padding: 24px 0 8px;
 }
 
-.city-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+.cities-head .eyebrow {
+  margin-bottom: 8px;
 }
 
-.city-card {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  gap: 8px;
-  padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
-  backdrop-filter: blur(18px);
-}
-
-.city-card svg {
-  color: var(--green);
-}
-
-.city-card h3 {
-  margin: 4px 0 0;
-  font-size: 1.08rem;
+.cities-head h2 {
+  margin-bottom: 16px;
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
   line-height: 1.25;
 }
 
-.city-card p {
-  flex: 1;
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.5;
+.city-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.city-card a {
+.city-item {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+}
+
+.city-item[open] {
+  flex-basis: 100%;
+  border-radius: 12px;
+}
+
+.city-item summary {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 6px;
-  color: var(--green);
-  font-size: 0.9rem;
-  font-weight: 800;
+  padding: 7px 13px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 750;
+  list-style: none;
 }
 
-:root[data-theme="dark"] .city-card {
-  background: rgba(14, 14, 14, 0.76);
+.city-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.city-item summary svg,
+.city-item[open] summary {
+  color: var(--green);
+}
+
+.city-body {
+  padding: 0 16px 14px;
+}
+
+.city-body h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.city-body p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.city-body a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--green);
+  font-size: 0.85rem;
+  font-weight: 800;
 }
 
 .city-row {
@@ -1279,10 +1302,6 @@ footer a {
   .starter-grid {
     grid-template-columns: 1fr;
   }
-
-  .city-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (max-width: 690px) {
@@ -1310,10 +1329,6 @@ footer a {
     min-width: 28px;
     padding: 5px 5px;
     font-size: 0.7rem;
-  }
-
-  .city-grid {
-    grid-template-columns: 1fr;
   }
 
   .theme-toggle {
