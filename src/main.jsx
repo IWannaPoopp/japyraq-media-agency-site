@@ -290,7 +290,13 @@ function CaseMedia({ item }) {
   );
 }
 
-const heroReels = cases.filter((item) => item.fit !== "logo");
+const heroIntro = [
+  { name: "Reels для косметического бренда", label: "Реклама продукта", cover: "/cases/hero-cosmetic.jpg", video: "/cases/hero-cosmetic.mp4" },
+  { name: "Розыгрыш ForteBank", label: "Эмоции победителя", cover: "/cases/hero-forte.jpg", video: "/cases/hero-forte.mp4" },
+  { name: "Экспертный ролик для бизнеса", label: "Экспертный контент", cover: "/cases/hero-expert.jpg", video: "/cases/hero-expert.mp4" }
+];
+
+const heroReels = [...heroIntro, ...cases.filter((item) => item.fit !== "logo")];
 const REEL_MS = 3400;
 
 function HeroReel() {
