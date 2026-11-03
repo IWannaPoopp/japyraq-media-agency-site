@@ -565,6 +565,14 @@ section {
     linear-gradient(135deg, #050505, #1b281c);
 }
 
+.case-media-motion {
+  background:
+    linear-gradient(135deg, rgba(5, 5, 5, 0.12), transparent),
+    radial-gradient(circle at 24% 26%, rgba(120, 90, 255, 0.7), transparent 6rem),
+    radial-gradient(circle at 76% 30%, rgba(33, 160, 68, 0.6), transparent 7rem),
+    linear-gradient(135deg, #050505, #1a1630);
+}
+
 .case-device,
 .case-play {
   position: relative;
@@ -1385,6 +1393,14 @@ footer a {
     radial-gradient(circle at 20% 20%, rgba(123, 217, 87, 0.74), transparent 6rem),
     radial-gradient(circle at 72% 28%, rgba(255, 255, 255, 0.22), transparent 8rem),
     linear-gradient(135deg, #050505, #111b12);
+}
+
+:root[data-theme="dark"] .case-media-motion {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent),
+    radial-gradient(circle at 24% 26%, rgba(140, 110, 255, 0.62), transparent 6rem),
+    radial-gradient(circle at 76% 30%, rgba(123, 217, 87, 0.55), transparent 7rem),
+    linear-gradient(135deg, #050505, #15122a);
 }
 
 :root[data-theme="dark"] .insight-panel {

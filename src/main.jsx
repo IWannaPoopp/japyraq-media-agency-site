@@ -11,7 +11,6 @@ import {
   Clapperboard,
   Clock,
   FileCheck,
-  AtSign,
   MapPin,
   Megaphone,
   Moon,
@@ -91,6 +90,16 @@ const services = [
 
 const cases = [
   {
+    name: "Закладка клиники в Шымкенте",
+    label: "Репортаж",
+    result: "500+ гостей / официальная церемония",
+    kind: "EVENT",
+    text: "Репортажный ролик с церемонии закладки капсулы строительства клиники: выступления, ключевые моменты, атмосфера и масштаб будущего проекта.",
+    tags: ["репортаж", "шымкент", "ивент"],
+    gradient: "event",
+    href: "https://www.instagram.com/reel/DeFQ4IvB2De/"
+  },
+  {
     name: "Event coverage",
     label: "Фото + видео",
     result: "ивенты / форумы / бренды",
@@ -119,6 +128,16 @@ const cases = [
     tags: ["drone", "mobile", "shorts"],
     gradient: "drone",
     href: "https://www.instagram.com/p/DPBVe1tCHcz/"
+  },
+  {
+    name: "3D-визуал для игры",
+    label: "3D и моушн-дизайн",
+    result: "тизер до запуска проекта",
+    kind: "3D",
+    text: "Визуал, который погружает в атмосферу игры ещё до её запуска: динамика, детали и проработка, чтобы передать стиль и характер проекта.",
+    tags: ["3d", "motion", "gamedev"],
+    gradient: "motion",
+    href: "https://www.instagram.com/reel/DV_FsZPDETD/"
   },
   {
     name: "@chessinedu",
@@ -222,6 +241,16 @@ const guarantees = [
   { icon: Users, title: "Один менеджер", text: "Один контакт и один договор на все города и форматы." },
   { icon: MapPin, title: "Без командировочных", text: "Местные операторы в 17+ регионах: билеты и гостиницы не входят в смету." }
 ];
+
+function InstagramIcon({ size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5.5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17.6" cy="6.4" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 function Particles() {
   const canvasRef = useRef(null);
@@ -467,7 +496,7 @@ function App() {
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           <a className="header-link" href="https://www.instagram.com/japyraq.media.agency/" target="_blank" rel="noreferrer">
-            <AtSign size={18} />
+            <InstagramIcon size={18} />
             Instagram
           </a>
         </div>
@@ -737,7 +766,7 @@ function App() {
             <p className="contact-lead">Напишите задачу и город. Ответим в WhatsApp, предложим формат, сроки и стоимость под ваш бюджет.</p>
             <div className="contact-links">
               <a href="https://www.instagram.com/japyraq.media.agency/" target="_blank" rel="noreferrer">
-                <AtSign size={18} />
+                <InstagramIcon size={18} />
                 @japyraq.media.agency
               </a>
               <a href={createWhatsAppUrl()} target="_blank" rel="noreferrer">
