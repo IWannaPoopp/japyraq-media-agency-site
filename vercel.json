@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "japyraq.media" }],
+      "destination": "https://www.japyraq.media/:path*",
+      "statusCode": 301
+    }
+  ]
+}
